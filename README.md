@@ -16,7 +16,10 @@ Entrepreneur. Creator. Artist. 포트폴리오 웹사이트입니다.
 
 이 저장소는 Claude Artifact **Jihyun Kim Portfolio**(https://claude.ai/artifact/UTC3V9MdeeLvjtouDpZCGn)를 그대로 따라갑니다.
 
-- Artifact에서 **Publish changes**를 누르면(또는 Claude가 Artifact를 수정해 게시하면) 그때 한 번 동기화가 실행되어 이 저장소의 `index.html`이 새로 만들어지고 push됩니다. 그러면 Vercel이 자동으로 다시 배포합니다. 정해진 시간마다 도는 작업은 없습니다.
+- Artifact에서 **Publish changes**를 누른 뒤, 아래 둘 중 하나를 하면 그때 한 번 동기화가 실행되어 이 저장소의 `index.html`이 새로 만들어지고 push됩니다. 그러면 Vercel이 자동으로 다시 배포합니다.
+  - claude.ai의 예약 작업(Scheduled tasks)에서 **Jihyun Kim Portfolio · GitHub에 반영하기**의 **Run** 누르기
+  - Claude와의 대화에서 "GitHub에 반영해줘"라고 말하기
+- 정해진 시간마다 도는 작업은 없어서, 실행할 때만 비용이 듭니다. (페이지 안의 Publish 버튼은 동기화를 자동으로 깨우지 못합니다. Claude가 Artifact를 게시할 때는 자동으로 반영될 수 있습니다.)
 - Edit works에서 올린 작품 이미지도 `images/` 폴더로 함께 옮겨집니다.
 - 매번 실제 브라우저로 사이트를 띄워 검사한 뒤에만 push하기 때문에, 깨진 버전은 올라가지 않습니다.
 - **수정은 Artifact에서 하세요.** 이 저장소의 `index.html`을 직접 고치면, 다음에 Artifact가 바뀔 때 Artifact 내용으로 덮어써집니다.

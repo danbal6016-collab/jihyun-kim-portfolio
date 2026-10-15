@@ -3,7 +3,9 @@
 The Claude Artifact **Jihyun Kim Portfolio** (https://claude.ai/artifact/UTC3V9MdeeLvjtouDpZCGn) is the source of truth.
 This repository holds the deployable copy; Vercel redeploys on every push to `main`.
 A dedicated Claude Code session watches the Artifact (ArtifactComments `watch`) and runs this procedure each time the Artifact is
-republished, e.g. when the owner presses **Publish changes** in the page's Edit works panel. Nothing runs on a schedule.
+republished by a publish that emits a wake (publishes from a Claude session do; the page's own Edit works **Publish changes** did not).
+After an in-page publish the owner runs the on-demand task "Jihyun Kim Portfolio · GitHub에 반영하기" (or asks Claude), which runs this procedure.
+Nothing runs on a schedule.
 The procedure can also be run by hand from any Claude Code session that has this repository attached.
 
 `R` below is the repository checkout (normally `/home/user/jihyun-kim-portfolio`).
