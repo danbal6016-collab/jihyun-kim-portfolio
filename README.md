@@ -7,9 +7,20 @@ Entrepreneur. Creator. Artist. 포트폴리오 웹사이트입니다.
 
 ```
 ├── index.html     사이트 전체 (이 파일 하나면 동작)
-├── images/        작품 이미지를 넣고 싶을 때 쓰는 폴더 (선택)
+├── images/        작품 이미지
+├── tools/sync/    Artifact → GitHub 자동 동기화 도구 (배포에는 포함 안 됨)
 └── README.md
 ```
+
+## Artifact와 실시간 연동
+
+이 저장소는 Claude Artifact **Jihyun Kim Portfolio**(https://claude.ai/artifact/UTC3V9MdeeLvjtouDpZCGn)를 그대로 따라갑니다.
+
+- Artifact가 바뀌면(Edit works로 작품 추가·수정, 또는 Claude에게 디자인 수정 요청) 1시간 안에 자동으로 이 저장소의 `index.html`이 새로 만들어지고 push됩니다. 그러면 Vercel이 자동으로 다시 배포합니다.
+- Edit works에서 올린 작품 이미지도 `images/` 폴더로 함께 옮겨집니다.
+- 매번 실제 브라우저로 사이트를 띄워 검사한 뒤에만 push하기 때문에, 깨진 버전은 올라가지 않습니다.
+- **수정은 Artifact에서 하세요.** 이 저장소의 `index.html`을 직접 고치면, 다음에 Artifact가 바뀔 때 Artifact 내용으로 덮어써집니다.
+- 동기화 절차는 `tools/sync/SYNC.md`에 있습니다.
 
 ## Vercel 배포
 
@@ -19,7 +30,8 @@ Entrepreneur. Creator. Artist. 포트폴리오 웹사이트입니다.
 
 ## 작품(Works) 추가·수정
 
-`index.html`에서 `id="works-data"`를 검색하면 나오는 목록을 고칩니다.
+Artifact의 **Edit works** 버튼으로 추가·수정하면 이 사이트에도 자동으로 반영됩니다(위 연동 참고).
+참고로 사이트 안의 목록은 `index.html`에서 `id="works-data"`를 검색하면 나오는 아래 형식입니다.
 
 ```json
 {"v":1,"items":[
@@ -36,4 +48,4 @@ Entrepreneur. Creator. Artist. 포트폴리오 웹사이트입니다.
 
 - **음악·효과음**: 음원 파일 없이 브라우저(Web Audio)에서 실시간으로 만들어집니다. 브라우저 정책상 방문자가 처음 클릭/터치할 때 소리가 시작되고, 왼쪽 아래 Sound 버튼으로 켜고 끕니다.
 - **폰트**: Google Fonts(Bodoni Moda, Cormorant Garamond)에서 불러옵니다.
-- **Edit works 편집 패널**은 Claude Artifact 전용 기능이라 이 사이트에는 없습니다. 작품은 위 방법으로 수정하세요.
+- **Edit works 편집 패널**은 Claude Artifact 전용 기능이라 배포된 사이트에는 버튼이 보이지 않습니다. 작품은 Artifact에서 수정하면 자동으로 반영됩니다.
