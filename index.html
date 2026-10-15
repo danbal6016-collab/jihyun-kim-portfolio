@@ -330,7 +330,7 @@ section { position: relative; }
 <button class="sound" id="soundBtn" type="button" aria-pressed="false"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Sound off</span></button>
 
 <!-- Works archive: edit this list to add or change works (see README.md) -->
-<script type="application/json" id="works-data">{"v":1,"items":[]}</script>
+<script type="application/json" id="works-data">{"v":1,"items":[{"id":"wmv9oz7cob7c7","cat":"websites","title":"Black Taorot","year":"2026.1.1","role":"","desc":"","link":"https://www.jblacktarot.com/","image":"images/33f6268b536381d4e26aaa401fed19ae.png"}]}</script>
 <script>
 /*!
  * GSAP 3.12.5
@@ -771,11 +771,11 @@ section { position: relative; }
   function bindRow(row, it) {
     if (!fine) return;
     row.addEventListener('pointerenter', () => {
-      cur.classList.add('view'); preview.classList.add('on');
+      preview.classList.add('on');
       if (it.image) { pvImg.hidden = false; pvImg.src = it.image; pvImg.onerror = () => { pvImg.hidden = true; }; } else pvImg.hidden = true;
       paint(pvArt, tex(catOf(it.cat).art, 4 + CATS.indexOf(catOf(it.cat)) * 3));
     });
-    row.addEventListener('pointerleave', () => { cur.classList.remove('view'); preview.classList.remove('on'); });
+    row.addEventListener('pointerleave', () => { preview.classList.remove('on'); });
   }
   if (fine) {
     let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y, px = x, py = y, vx = 0;
