@@ -98,7 +98,7 @@ html = f'''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jihyun Kim Portfolio</title>
-<meta name="description" content="Jihyun Kim — Entrepreneur. Creator. Artist. Everything I want, wants me more.">
+<meta name="description" content="Jihyun Kim — Entrepreneur. Creator. Artist. Learn like a pro, break like an artist.">
 <meta name="theme-color" content="#0a0708">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jihyun Kim Portfolio">
