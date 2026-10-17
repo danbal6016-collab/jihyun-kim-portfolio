@@ -42,7 +42,7 @@ Artifact의 **Edit works** 버튼으로 추가·수정하면 이 사이트에도
 ]}
 ```
 
-- `cat`(분야): `websites`, `screenplays`, `webtoons`, `films`, `shortform`, `awards` 중 하나
+- `cat`(분야): `websites`, `screenplays`, `films`, `shortform`, `awards` 중 하나
 - `link`, `image`는 비워둬도 됩니다(`""`). 이미지가 없으면 분야별 실크 질감 이미지가 자동으로 나옵니다.
 - `image`: `https://`로 시작하는 이미지 주소, 또는 `images/` 폴더에 넣은 파일 경로(예: `images/poster.jpg`)
 - 쉼표·따옴표 형식(JSON)이 틀리면 목록이 비어 보이니 주의하세요.

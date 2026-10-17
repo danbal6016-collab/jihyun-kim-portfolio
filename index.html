@@ -20,7 +20,7 @@ html { scroll-padding-top: env(safe-area-inset-top, 0px); }
 body { margin: 0; padding: 0; }
 img { max-width: 100%; }
 
-/* Layout: velvet-and-silk editorial. A living burgundy silk field and a fortune-teller's crystal orb open the page under one white line; then About (philosophy, formation, proof), How I think (pinned run), the Works archive by discipline, and a lacquered contact. Velvet black, wine, burgundy, blush, ivory. */
+/* Layout: velvet-and-silk editorial. A living burgundy silk field and a fortune-teller's crystal orb open the page under one white line; then About (philosophy, formation, proof), the Works archive by discipline, and a lacquered contact. How I think lives inside the orb: click it to fall in. Velvet black, wine, burgundy, blush, ivory. */
 :root {
   --black: #0a0708;
   --velvet: #150a0d;
@@ -101,6 +101,14 @@ em { font-style: italic; }
 #orb { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; transform-origin: 50% 50%; will-change: transform; }
 .orb-hit { position: absolute; left: 0; top: 0; z-index: 4; border-radius: 50%; cursor: grab; touch-action: none; }
 .orb-hit.drag { cursor: grabbing; }
+.orb-hit:focus-visible { outline: 1px solid rgba(234,210,203,.6); outline-offset: 8px; }
+.orb-hit.static { left: 50%; top: 37%; width: min(44vh, 70vw); height: min(44vh, 70vw); transform: translate(-50%, -50%); cursor: pointer;
+  background: radial-gradient(circle at 36% 30%, rgba(255,240,242,.42), rgba(196,107,124,.38) 22%, rgba(123,21,48,.6) 48%, rgba(26,6,11,.92) 78%);
+  box-shadow: 0 0 90px rgba(196,107,124,.28), inset 0 0 40px rgba(255,255,255,.08); }
+.orb-tip { position: absolute; left: 0; top: 0; z-index: 4; pointer-events: none; white-space: nowrap; letter-spacing: .32em; color: rgba(255,240,242,.86);
+  text-shadow: 0 1px 14px rgba(0,0,0,.6); opacity: 0; transition: opacity .9s var(--ease); }
+.orb-tip.on { opacity: 1; }
+.orb-tip.static { left: 50%; top: calc(37% + min(22vh, 35vw) + 18px); transform: translateX(-50%); }
 .hero-copy { position: relative; z-index: 3; display: grid; gap: 14px; justify-items: center; text-align: center; color: #fff; filter: drop-shadow(0 8px 30px rgba(0,0,0,.55)); }
 .hero-tag { display: none; font-family: var(--f-display); font-style: italic; font-size: 15px; letter-spacing: .06em; color: rgba(255,255,255,.92); }
 @media (max-width: 760px) { .hero-tag { display: block; } }
@@ -131,20 +139,33 @@ section { position: relative; }
 .proof span { font-style: italic; font-size: 16px; color: var(--dim); line-height: 1.35; }
 @media (max-width: 760px) { .about { grid-template-columns: minmax(0, 1fr); } .proof { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 
-/* principles */
-.principles { border-top: 1px solid var(--line); overflow-x: clip; }
-.pr-pin { min-height: 100svh; display: grid; align-content: center; gap: clamp(32px, 4vw, 60px); padding-block: 96px 64px; overflow-x: clip; }
-.pr-head { display: flex; justify-content: space-between; gap: 16px; align-items: end; flex-wrap: wrap; }
-.pr-track { display: flex; width: max-content; }
-.pr { width: min(58vw, 760px); padding-right: 7vw; display: grid; gap: 18px; align-content: start; }
-.pr .num { color: var(--rose); display: flex; gap: 14px; align-items: center; }
-.pr .num::after { content: ""; flex: 1; max-width: 100px; height: 1px; background: var(--line); }
-.pr p { margin: 0; font-family: var(--f-display); font-size: clamp(26px, 3.1vw, 52px); line-height: 1.12; letter-spacing: -0.015em; text-wrap: balance; }
-.pr p em { color: var(--blush); }
-@media (max-width: 760px) { .pr-track { flex-direction: column; width: auto; gap: 48px; } .pr { width: auto; padding-right: 0; } .pr-pin { min-height: 0; } }
-.no-motion .pr-track { flex-direction: column; width: auto; gap: 48px; }
-.no-motion .pr { width: auto; padding-right: 0; }
-.no-motion .pr-pin { min-height: 0; }
+/* the orb's inner world: How I think, reached by clicking the crystal ball */
+html.world-on, html.world-on body { overflow: hidden; }
+.world { position: fixed; inset: 0; z-index: 95; overflow: hidden; color: var(--ivory); touch-action: none;
+  background: radial-gradient(ellipse 80% 70% at 50% 45%, #3a0f18, #12070a 62%, #0a0708); }
+#worldGL { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.w-stage { position: absolute; inset: 0; }
+.w-card { position: absolute; left: 50%; top: 50%; width: min(880px, 86vw); display: grid; gap: 22px; justify-items: center; text-align: center;
+  transform: translate(-50%, -50%); will-change: transform, opacity, filter; }
+.w-card .num { color: var(--rose); display: flex; align-items: center; gap: 16px; }
+.w-card .num::before, .w-card .num::after { content: ""; width: 44px; height: 1px; background: linear-gradient(90deg, transparent, rgba(196,107,124,.75)); }
+.w-card .num::after { transform: scaleX(-1); }
+.w-card p { margin: 0; font-family: var(--f-display); font-size: clamp(28px, 3.6vw, 60px); line-height: 1.14; letter-spacing: -0.015em; text-wrap: balance; text-shadow: 0 6px 40px rgba(0,0,0,.5); }
+.w-card p em { color: var(--blush); }
+.w-title .h2 { font-size: clamp(46px, 6.6vw, 108px); text-shadow: 0 6px 40px rgba(0,0,0,.5); }
+.w-title > .sc:first-child { color: var(--blush); letter-spacing: .32em; }
+.w-close { position: absolute; z-index: 2; top: calc(20px + env(safe-area-inset-top, 0px)); right: max(20px, env(safe-area-inset-right, 0px)); height: 42px; padding: 0 20px;
+  border: 1px solid rgba(255,240,242,.22); border-radius: 999px; background: rgba(21,10,13,.35); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  color: #fff; cursor: pointer; transition: border-color .5s var(--ease); }
+.w-close:hover { border-color: rgba(255,240,242,.48); }
+.w-hint { position: absolute; z-index: 2; left: 0; right: 0; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); text-align: center; color: rgba(244,237,230,.58); transition: opacity .9s var(--ease); pointer-events: none; }
+.w-hint.off { opacity: 0; }
+.w-dots { position: absolute; z-index: 2; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.w-dots button { background: none; border: 0; padding: 8px 7px; cursor: pointer; font-family: var(--f-display); font-style: italic; font-size: 14px; line-height: 1; color: rgba(244,237,230,.36); transition: color .5s var(--ease); }
+.w-dots button:hover { color: rgba(244,237,230,.75); }
+.w-dots button[aria-current="true"] { color: var(--blush); }
+.world:focus { outline: none; }
+@media (max-width: 760px) { .w-dots { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); } .w-hint { bottom: calc(122px + env(safe-area-inset-bottom, 0px)); } }
 
 /* works */
 .works { border-top: 1px solid var(--line); padding-block: clamp(96px, 10vw, 160px) clamp(80px, 9vw, 140px); }
@@ -253,7 +274,8 @@ section { position: relative; }
 <section class="hero pad" id="top">
   <canvas id="silk" aria-hidden="true"></canvas>
   <canvas id="orb" aria-hidden="true"></canvas>
-  <div class="orb-hit" id="orbHit" aria-hidden="true"></div>
+  <div class="orb-hit" id="orbHit" role="button" tabindex="0" aria-label="Step inside the orb: How I think"></div>
+  <span class="orb-tip sc" id="orbTip" aria-hidden="true">Step inside</span>
   <div class="hero-copy">
     <span class="hero-tag">Entrepreneur. Creator. Artist.</span>
     <h1 class="headline" aria-label="Learn like a pro, Break like an artist">
@@ -286,23 +308,6 @@ section { position: relative; }
   </div>
 </section>
 
-<section class="principles" id="principles">
-  <div class="pr-pin" id="prPin">
-    <div class="pr-head pad">
-      <h2 class="h2" data-lines><span class="l"><span>How I <em>think</em></span></span></h2>
-      <span class="sc dim" data-fade>Six rules I write by</span>
-    </div>
-    <div class="pr-track pad" id="prTrack">
-      <div class="pr"><span class="num sc">I</span><p>Twist the obvious. If the audience saw it coming, it doesn’t <em>belong</em> on screen.</p></div>
-      <div class="pr"><span class="num sc">II</span><p>The fewest words, the most <em>feeling</em>. Leave the rest to the actor.</p></div>
-      <div class="pr"><span class="num sc">III</span><p>Every scene earns its place, <em>or it leaves</em>.</p></div>
-      <div class="pr"><span class="num sc">IV</span><p>In my stories, emotion outruns reason, and <em>the kind</em> outlast the cruel.</p></div>
-      <div class="pr"><span class="num sc">V</span><p>What people crave and what I crave are usually the same thing. That is my <em>unfair advantage</em>.</p></div>
-      <div class="pr"><span class="num sc">VI</span><p>I rewrite until I can’t stop <em>watching</em> it.</p></div>
-    </div>
-  </div>
-</section>
-
 <section class="works pad" id="works">
   <div class="w-head">
     <h2 class="h2" data-lines><span class="l"><span>Selected <em>works</em></span></span></h2>
@@ -324,10 +329,25 @@ section { position: relative; }
 </section>
 </main>
 
+<div class="world" id="world" hidden role="dialog" aria-modal="true" aria-label="How I think" data-lenis-prevent="">
+  <canvas id="worldGL" aria-hidden="true"></canvas>
+  <div class="w-stage" id="wStage">
+    <div class="w-card w-title"><span class="sc">Inside the orb</span><h2 class="h2">How I <em>think</em></h2><span class="sc dim">Six rules I write by</span></div>
+    <div class="w-card"><span class="num sc">I</span><p>Twist the obvious. If the audience saw it coming, it doesn’t <em>belong</em> on screen.</p></div>
+    <div class="w-card"><span class="num sc">II</span><p>The fewest words, the most <em>feeling</em>. Leave the rest to the actor.</p></div>
+    <div class="w-card"><span class="num sc">III</span><p>Every scene earns its place, <em>or it leaves</em>.</p></div>
+    <div class="w-card"><span class="num sc">IV</span><p>In my stories, emotion outruns reason, and <em>the kind</em> outlast the cruel.</p></div>
+    <div class="w-card"><span class="num sc">V</span><p>What people crave and what I crave are usually the same thing. That is my <em>unfair advantage</em>.</p></div>
+    <div class="w-card"><span class="num sc">VI</span><p>I rewrite until I can’t stop <em>watching</em> it.</p></div>
+  </div>
+  <button class="w-close sc" id="wClose" type="button">Step out</button>
+  <span class="w-hint sc" id="wHint"></span>
+  <ol class="w-dots" id="wDots" aria-label="Rules"></ol>
+</div>
 <button class="sound" id="soundBtn" type="button" aria-pressed="false"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Sound off</span></button>
 
 <!-- Works archive: edit this list to add or change works (see README.md) -->
-<script type="application/json" id="works-data">{"v":1,"items":[{"id":"wmv9oz7cob7c7","cat":"websites","title":"Black Taorot","year":"2026-2027","role":"Creator","desc":"","link":"https://www.jblacktarot.com/","image":"images/33f6268b536381d4e26aaa401fed19ae.png"},{"id":"wmv9pidurh7hn","cat":"awards","title":"Donation certificate","year":"2026","role":"","desc":"donated $2,,200 to global children who are suffering from worldwide issues","link":"https://drive.google.com/file/d/1fMZAxCiHrV6jQj0HGF_y5ooZhztegjGL/view?usp=drive_link","image":"images/7b700984903715055165dc991d5aa381.png"},{"id":"wmv9poqj2gxow","cat":"awards","title":"Business registerations","year":"2026","role":"Enterpreneur","desc":"","link":"https://drive.google.com/file/d/16XYSz-Pkm2PGhcFGsYRKSHjmCUIKrdHI/view?usp=drive_link","image":"images/e4a85b822d7cdf5f3b2360f5be08379c.png"},{"id":"wmvaayhd43srd","cat":"awards","title":"Postype Creator","year":"2026","role":"writer","desc":"approximately earn $200.000 by writing posts","link":"https://drive.google.com/file/d/1C2sZVRvSQsC8R5pi29HQL290c-pSbuQg/view?usp=sharing","image":"images/57bf7984aace18b96372d804f9f3e526.png"},{"id":"wmvab4avopbn7","cat":"awards","title":"LAMDA Award","year":"2025","role":"actor","desc":"London Academy of Music & Drama Art","link":"","image":"images/051a31de9d239e5d87819ba3d02830bb.png"},{"id":"wmvabrhi43cdi","cat":"awards","title":"Beyond Shelter Service Certificate","year":"2025-2027","role":"leader","desc":"54 hours of service hours, join in national service competition","link":"https://drive.google.com/drive/folders/1QVBIzVoekNipJzY9Wc2hh6eiILeI0Q8Y?usp=drive_link","image":"images/49bea2e36ce2810dd325b8d2af8993a6.png"},{"id":"wmvacbfxwraju","cat":"films","title":"BIFF 2026  NLCS","year":"2025-2026","role":"Director & writer","desc":"made first film as a director, leading 20 students in NLCS","link":"https://drive.google.com/drive/folders/162thpHVaRqKp3VMiSVjHrobZtmQUzB3d?usp=drive_link","image":"images/94fbd20e42fcc73424b2c14160d8fb8f.png"},{"id":"wmvacnxtq8grt","cat":"awards","title":"Copyright Contract","year":"2025","role":"director","desc":"made a copyright contract with the TOP 3 publishing company in South Korea to make a film adaption","link":"https://drive.google.com/file/d/1xzvg1QPNBiOddDttrDuePRQ3sk7UUGSc/view?usp=drive_link","image":"images/124b826acaac34ef274605622ef6377c.png"},{"id":"wmvafonfd6wxc","cat":"awards","title":"KMTA Certificate","year":"2025","role":"Attorney, actor(witness)","desc":"Korean Mock Trial Association","link":"https://drive.google.com/drive/folders/1h4_Xix2jMOJvvfnQW79G70QlFnNAHypE?usp=drive_link","image":"images/7626075cd9d4790b15940d12a725e83e.png"},{"id":"wmvagttvoru1r","cat":"awards","title":"IB Drama Portfolio","year":"2026-2027","role":"Creator","desc":"","link":"https://sites.google.com/d/1Wz8FP73hvZh8Y9GtvqaEur5nOVJlBht4/p/1JFVWB6bLBsKOyZg1qLqfdpbwaKyTbPL4/edit","image":""},{"id":"wmvagzywavj4j","cat":"shortform","title":"2026 Naver AI Ad Contest","year":"2026","role":"Creator","desc":"My first AI work","link":"https://drive.google.com/file/d/15o_LpFguvKyFXumJeu3lTwWgyEEDzWZB/view?usp=drive_link","image":"images/ef38212f45cff977fb70404f71aa00eb.png"},{"id":"wmvah3sj0fgh8","cat":"films","title":"BIKY Future Lab Creators Fellowship 2026","year":"2026-2027","role":"Creator","desc":"","link":"https://drive.google.com/drive/folders/1-pbfj7BPMoc5nbe26o8Lf3W-tNTRZSNt?usp=drive_link","image":""},{"id":"wmvaml3aydev7","cat":"screenplays","title":"혈로 (BloodPath)","year":"2026","role":"series","desc":"Noir/crime/action/romance/picaresque","link":"https://drive.google.com/drive/folders/1pZxSuTzPIu6wHyMTT9FhHuZv9QLiAdxg?usp=drive_link","image":""},{"id":"wmvamrmlln5yt","cat":"screenplays","title":"문 (The Door)","year":"2026","role":"film","desc":"adaption screenplay","link":"https://drive.google.com/drive/folders/1TUlYY8xT6e6xbKrtcoFTEWjuL55tLsc0?usp=drive_link","image":""},{"id":"wmvamy7dyking","cat":"screenplays","title":"더 센 피날 (The Scène Finale)","year":"2026","role":"film","desc":"drama/thriller/romance/mystery","link":"https://drive.google.com/drive/folders/1RkHuotJ_I1ntA40HsbRhKgMJvsJ8tUum?usp=drive_link","image":""},{"id":"wmvan2r8e9dom","cat":"screenplays","title":"스쿨 애슐리아 (School Ashulia)","year":"2026","role":"series","desc":"teen/drama/mystery/survival","link":"https://drive.google.com/drive/folders/1Z3HjnXY2qXdLofpFeOdNgmr93d-fZThe?usp=drive_link","image":""},{"id":"wmvan3plgwqz0","cat":"screenplays","title":"거부할 수 없는 (Irreversible)","year":"2026","role":"series","desc":"romance/drama/growth/mystery","link":"https://drive.google.com/drive/folders/12a1b_H2icRPeTznwv-dkfNbd_jeS98z-?usp=drive_link","image":""},{"id":"wmvan5gboo74g","cat":"screenplays","title":"서리꽃 (Frost Ice)","year":"2026","role":"series","desc":"history/thriller/romance/war","link":"https://drive.google.com/drive/folders/1gh15KmFpqNqae_YqVwJfqFg5ftnHzX2y?usp=drive_link","image":""},{"id":"wmvan729r8nlr","cat":"screenplays","title":"청송여자교도소 (Chongsong Women Prison)","year":"2026","role":"seriess","desc":"survival/action/crime/thriller/picaresque","link":"https://drive.google.com/drive/folders/12-xdPByvVUl7d8NFVwlTmifc1ZChU0Fv?usp=drive_link","image":""},{"id":"wmvandszzpeuh","cat":"screenplays","title":"미티아 (Mithya)","year":"2026","role":"series","desc":"horror/mystery/romance","link":"https://drive.google.com/drive/folders/1qYBHiTxqqskVkX6UOaOeQIQwV4AjQr1j?usp=drive_link","image":""},{"id":"wmvaocokrnhxd","cat":"websites","title":"Jblack Treasury","year":"2026","role":"Founder","desc":"established a website company","link":"https://jblack-treasury.vercel.app/","image":"images/cf0c957457c80ce13efb7fac22b174c7.png"},{"id":"wmvapahou8vn7","cat":"awards","title":"NLLYWOOD Concert","year":"2026-2027","role":"leader (director) & singer","desc":"","link":"https://drive.google.com/drive/folders/1ckcC1sgV4qPAYKxOFY8UlzwfLUX1Em5G?usp=drive_link","image":"images/a7fee5765d22a0f934c85d83eb6e0f04.png"},{"id":"wmvaplyqvow70","cat":"shortform","title":"가 족같은 세상","year":"2026","role":"insta creator","desc":"","link":"","image":""},{"id":"wmvapmw496mot","cat":"shortform","title":"Year 2300","year":"2026","role":"insta creator","desc":"","link":"","image":""},{"id":"wmvapqwcx6way","cat":"shortform","title":"Please Me","year":"2026","role":"insta series","desc":"","link":"","image":""}]}</script>
+<script type="application/json" id="works-data">{"v":1,"items":[{"id":"wmv9oz7cob7c7","cat":"websites","title":"Black Taorot","year":"2026-2027","role":"Creator","desc":"","link":"https://www.jblacktarot.com/","image":"images/33f6268b536381d4e26aaa401fed19ae.png"},{"id":"wmv9pidurh7hn","cat":"awards","title":"Donation certificate","year":"2026","role":"","desc":"donated approx $4,000 to global children who are suffering from worldwide issues","link":"https://drive.google.com/file/d/1fMZAxCiHrV6jQj0HGF_y5ooZhztegjGL/view?usp=drive_link","image":"images/7b700984903715055165dc991d5aa381.png"},{"id":"wmv9poqj2gxow","cat":"awards","title":"Business registerations","year":"2026","role":"Enterpreneur","desc":"for my Jblack Treasury Company","link":"https://drive.google.com/file/d/16XYSz-Pkm2PGhcFGsYRKSHjmCUIKrdHI/view?usp=drive_link","image":"images/e4a85b822d7cdf5f3b2360f5be08379c.png"},{"id":"wmvaayhd43srd","cat":"awards","title":"Postype Creator","year":"2026","role":"writer","desc":"approximately earn $200 by writing posts","link":"https://drive.google.com/file/d/1C2sZVRvSQsC8R5pi29HQL290c-pSbuQg/view?usp=sharing","image":"images/57bf7984aace18b96372d804f9f3e526.png"},{"id":"wmvab4avopbn7","cat":"awards","title":"LAMDA Award","year":"2025","role":"actor","desc":"London Academy of Music & Drama Art","link":"","image":"images/051a31de9d239e5d87819ba3d02830bb.png"},{"id":"wmvabrhi43cdi","cat":"awards","title":"Beyond Shelter Service Certificate","year":"2025-2027","role":"leader","desc":"54 hours of service hours, join in national service competition","link":"https://drive.google.com/drive/folders/1QVBIzVoekNipJzY9Wc2hh6eiILeI0Q8Y?usp=drive_link","image":"images/49bea2e36ce2810dd325b8d2af8993a6.png"},{"id":"wmvacbfxwraju","cat":"films","title":"BIFF 2026  NLCS","year":"2025-2026","role":"Director & writer","desc":"made first film as a director, leading 20 students in NLCS","link":"https://drive.google.com/drive/folders/162thpHVaRqKp3VMiSVjHrobZtmQUzB3d?usp=drive_link","image":"images/94fbd20e42fcc73424b2c14160d8fb8f.png"},{"id":"wmvacnxtq8grt","cat":"awards","title":"Copyright Contract","year":"2025","role":"director","desc":"made a copyright contract with the TOP 3 publishing company in South Korea to make a film adaption","link":"https://drive.google.com/file/d/1xzvg1QPNBiOddDttrDuePRQ3sk7UUGSc/view?usp=drive_link","image":"images/124b826acaac34ef274605622ef6377c.png"},{"id":"wmvafonfd6wxc","cat":"awards","title":"KMTA Certificate","year":"2025","role":"Attorney, actor(witness)","desc":"Korean Mock Trial Association","link":"https://drive.google.com/drive/folders/1h4_Xix2jMOJvvfnQW79G70QlFnNAHypE?usp=drive_link","image":"images/7626075cd9d4790b15940d12a725e83e.png"},{"id":"wmvagttvoru1r","cat":"awards","title":"IB Drama Portfolio","year":"2026-2027","role":"Creator","desc":"","link":"https://sites.google.com/d/1Wz8FP73hvZh8Y9GtvqaEur5nOVJlBht4/p/1JFVWB6bLBsKOyZg1qLqfdpbwaKyTbPL4/edit","image":""},{"id":"wmvagzywavj4j","cat":"shortform","title":"2026 Naver AI Ad Contest","year":"2026","role":"Creator","desc":"My first AI work","link":"https://drive.google.com/file/d/15o_LpFguvKyFXumJeu3lTwWgyEEDzWZB/view?usp=drive_link","image":"images/ef38212f45cff977fb70404f71aa00eb.png"},{"id":"wmvah3sj0fgh8","cat":"films","title":"BIKY Future Lab Creators Fellowship 2026","year":"2026-2027","role":"Writer & director","desc":"","link":"https://drive.google.com/drive/folders/1-pbfj7BPMoc5nbe26o8Lf3W-tNTRZSNt?usp=drive_link","image":""},{"id":"wmvaml3aydev7","cat":"screenplays","title":"혈로 (BloodPath)","year":"2026","role":"series","desc":"Noir/crime/action/romance/picaresque","link":"https://drive.google.com/drive/folders/1pZxSuTzPIu6wHyMTT9FhHuZv9QLiAdxg?usp=drive_link","image":""},{"id":"wmvamrmlln5yt","cat":"screenplays","title":"문 (The Door)","year":"2026","role":"film","desc":"adaption screenplay","link":"https://drive.google.com/drive/folders/1TUlYY8xT6e6xbKrtcoFTEWjuL55tLsc0?usp=drive_link","image":""},{"id":"wmvamy7dyking","cat":"screenplays","title":"더 센 피날 (The Scène Finale)","year":"2026","role":"film","desc":"drama/thriller/romance/mystery","link":"https://drive.google.com/drive/folders/1RkHuotJ_I1ntA40HsbRhKgMJvsJ8tUum?usp=drive_link","image":""},{"id":"wmvan2r8e9dom","cat":"screenplays","title":"스쿨 애슐리아 (School Ashulia)","year":"2026","role":"series","desc":"teen/drama/mystery/survival","link":"https://drive.google.com/drive/folders/1Z3HjnXY2qXdLofpFeOdNgmr93d-fZThe?usp=drive_link","image":""},{"id":"wmvan3plgwqz0","cat":"screenplays","title":"거부할 수 없는 (Irresistible)","year":"2026","role":"series","desc":"romance/drama/growth/mystery","link":"https://drive.google.com/drive/folders/12a1b_H2icRPeTznwv-dkfNbd_jeS98z-?usp=drive_link","image":""},{"id":"wmvan5gboo74g","cat":"screenplays","title":"서리꽃 (Frost Ice)","year":"2026","role":"series","desc":"history/thriller/romance/war","link":"https://drive.google.com/drive/folders/1gh15KmFpqNqae_YqVwJfqFg5ftnHzX2y?usp=drive_link","image":""},{"id":"wmvan729r8nlr","cat":"screenplays","title":"청송여자교도소 (Chongsong Women Prison)","year":"2026","role":"seriess","desc":"survival/action/crime/thriller/picaresque","link":"https://drive.google.com/drive/folders/12-xdPByvVUl7d8NFVwlTmifc1ZChU0Fv?usp=drive_link","image":""},{"id":"wmvandszzpeuh","cat":"screenplays","title":"미티아 (Mithya)","year":"2026","role":"series","desc":"horror/mystery/romance","link":"https://drive.google.com/drive/folders/1qYBHiTxqqskVkX6UOaOeQIQwV4AjQr1j?usp=drive_link","image":""},{"id":"wmvaocokrnhxd","cat":"websites","title":"Jblack Treasury","year":"2026","role":"Founder","desc":"established a website company","link":"https://jblack-treasury.vercel.app/","image":"images/cf0c957457c80ce13efb7fac22b174c7.png"},{"id":"wmvapahou8vn7","cat":"awards","title":"NLLYWOOD Concert","year":"2026-2027","role":"leader (director) & singer","desc":"","link":"https://drive.google.com/drive/folders/1ckcC1sgV4qPAYKxOFY8UlzwfLUX1Em5G?usp=drive_link","image":"images/a7fee5765d22a0f934c85d83eb6e0f04.png"},{"id":"wmvapmw496mot","cat":"shortform","title":"Year 2300","year":"2026","role":"creator","desc":"","link":"","image":""},{"id":"wmvapqwcx6way","cat":"shortform","title":"Please Me","year":"2026","role":"creator","desc":"","link":"","image":""},{"id":"wmvbysck602vd","cat":"awards","title":"2026 AI SNU Platform Creation Contest Award","year":"2026","role":"Creator","desc":"","link":"","image":""},{"id":"wmvbz4x0qixnk","cat":"films","title":"2027 USC SCA Pre-college Proegramme","year":"2027","role":"Writer & director","desc":"","link":"","image":""},{"id":"wmvbz73b97qnr","cat":"awards","title":"The 2nd KOREAZ Content Test Award","year":"2026","role":"Creator","desc":"","link":"","image":""},{"id":"wmvbz884q48g4","cat":"shortform","title":"Noir Myself","year":"2026","role":"","desc":"","link":"","image":""},{"id":"wmvbza6pyqi4v","cat":"awards","title":"The 7th HighlightTV AI Contest Award","year":"2026","role":"Creator","desc":"","link":"","image":""},{"id":"wmvbzbw38l43x","cat":"awards","title":"BytePlus x AI-Kive AI PRoduction Support Contest Award","year":"2026","role":"Creator","desc":"","link":"","image":""},{"id":"wmvbzcxyco4kj","cat":"awards","title":"K-Bank & KakaoBank Financial Idea Contest for Business Award","year":"2026","role":"Enterpreneur","desc":"","link":"","image":""},{"id":"wmvbzeu7uz3r9","cat":"awards","title":"The 5th PBV Kia Corporation Idea Contest","year":"2026","role":"Enterpreneur & creator","desc":"","link":"","image":""},{"id":"wmvbzgtibaiy4","cat":"awards","title":"WebAward Contest Korea Award","year":"2026","role":"Enterpreneur","desc":"","link":"","image":""},{"id":"wmvbzhlgcgc4e","cat":"awards","title":"2026 SF Story Contest Award","year":"2026","role":"Writer & Creator","desc":"","link":"","image":""},{"id":"wmvbzj9a3kfgn","cat":"awards","title":"Global AI Film & Arts Festival Award","year":"2026","role":"Writer & creator","desc":"","link":"","image":""}]}</script>
 <script>
 /*!
  * GSAP 3.12.5
@@ -371,12 +391,11 @@ section { position: relative; }
 
   /* ── works data ── */
   const CATS = [
-    { k: 'websites', label: 'Websites', one: 'website', art: 'pearl' },
-    { k: 'screenplays', label: 'Screenplays', one: 'screenplay', art: 'wine' },
-    { k: 'webtoons', label: 'Webtoons', one: 'webtoon', art: 'blush' },
-    { k: 'films', label: 'Films', one: 'film', art: 'lacquer' },
-    { k: 'shortform', label: 'Short Form', one: 'short form', art: 'velvet' },
-    { k: 'awards', label: 'Awards & Certificates', one: 'award or certificate', art: 'nail' }
+    { k: 'websites', label: 'Websites', one: 'website', art: 'pearl', seed: 4 },
+    { k: 'screenplays', label: 'Screenplays', one: 'screenplay', art: 'wine', seed: 7 },
+    { k: 'films', label: 'Films', one: 'film', art: 'lacquer', seed: 13 },
+    { k: 'shortform', label: 'Short Form', one: 'short form', art: 'velvet', seed: 16 },
+    { k: 'awards', label: 'Awards & Certificates', one: 'award or certificate', art: 'nail', seed: 19 }
   ];
   const clean = d => ({ v: 1, items: (Array.isArray(d && d.items) ? d.items : []).filter(i => i && typeof i === 'object' && CATS.some(c => c.k === i.cat)).map(i => ({
     id: String(i.id || ''), cat: i.cat, title: String(i.title || '').slice(0, 120), year: String(i.year || '').slice(0, 20), role: String(i.role || '').slice(0, 80),
@@ -418,7 +437,8 @@ section { position: relative; }
   function tex(kind, seed) {
     const key = kind + seed; if (texCache[key]) return texCache[key];
     const W = 140, H = 140, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-    const g = cv.getContext('2d'), img = g.createImageData(W, H);
+    const g = cv.getContext('2d'); if (!g) return cv;
+    const img = g.createImageData(W, H);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       const u = x / W, v = y / H; let c;
       if (kind === 'velvet') {
@@ -444,7 +464,8 @@ section { position: relative; }
   function paint(cv, src) {
     const w = cv.clientWidth || 320, h = cv.clientHeight || 400, d = Math.min(devicePixelRatio || 1, 2);
     cv.width = Math.max(1, Math.round(w * d)); cv.height = Math.max(1, Math.round(h * d));
-    const g = cv.getContext('2d'); g.imageSmoothingQuality = 'high';
+    const g = cv.getContext('2d'); if (!g) return;
+    g.imageSmoothingQuality = 'high';
     const s = Math.max(cv.width / src.width, cv.height / src.height);
     g.drawImage(src, (cv.width - src.width * s) / 2, (cv.height - src.height * s) / 2, src.width * s, src.height * s);
   }
@@ -476,8 +497,16 @@ section { position: relative; }
       return col;
     }`;
   const VS = 'attribute vec2 a; varying vec2 v; void main(){ v = a*.5+.5; gl_Position = vec4(a,0.,1.); }';
+  // one failing visual never takes the rest of the page down with it
+  const safe = fn => { try { return fn(); } catch (e) { console.warn(e); return null; } };
+  // a lost GPU context (backgrounded tab, driver reset) pauses drawing and is rebuilt when the browser restores it
+  const onContextLoss = (canvas, lose, restore) => {
+    canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); lose(); });
+    canvas.addEventListener('webglcontextrestored', () => { try { restore(); } catch (e) { lose(); } });
+  };
   function glKit(canvas, opts) {
-    const gl = canvas.getContext('webgl', opts); if (!gl) return null;
+    let gl = null; try { gl = canvas.getContext('webgl', opts); } catch (e) {}
+    if (!gl) return null;
     const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(s)); return null; } return s; };
     const prog = (fs, names) => { const p = gl.createProgram(), a = sh(gl.VERTEX_SHADER, VS), b = sh(gl.FRAGMENT_SHADER, fs); if (!a || !b) return null;
       gl.attachShader(p, a); gl.attachShader(p, b); gl.bindAttribLocation(p, 0, 'a'); gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) return null;
@@ -488,6 +517,8 @@ section { position: relative; }
     return { gl, prog };
   }
   const hero = $('#top');
+  const orbFx = { suck: 0 };   // 0 → 1 while the orb pulls the visitor in
+  let onOrbTap = null;
   const pointer = { x: .5, y: .5, last: -1e9, inHero: false, cx: 0, cy: 0 };
   hero.addEventListener('pointermove', e => {
     const r = hero.getBoundingClientRect();
@@ -496,36 +527,43 @@ section { position: relative; }
   });
   hero.addEventListener('pointerleave', () => { pointer.inHero = false; });
 
-  const silk = (function () {
-    const c = $('#silk'), kit = glKit(c, { alpha: false, antialias: false, depth: false, stencil: false }); if (!kit) return null;
-    const { gl, prog } = kit;
-    const adv = prog(`precision highp float; varying vec2 v;
-      uniform sampler2D prev; uniform float t, asp, force; uniform vec2 m, mv;
-      ${GL_NOISE}
-      vec2 curl(vec2 p){ float e=.03; return vec2(fbm(p+vec2(0.,e))-fbm(p-vec2(0.,e)), -(fbm(p+vec2(e,0.))-fbm(p-vec2(e,0.))))/(2.*e); }
-      void main(){
-        vec2 p = v*vec2(asp,1.);
-        vec2 vel = curl(p*1.7 + vec2(t*.04, -t*.03))*.0011;
-        vec2 d = (v-m)*vec2(asp,1.);
-        float fall = exp(-dot(d,d)*55.);
-        vel += mv*fall*.55;
-        float c = texture2D(prev, v - vel/vec2(asp,1.)).r;
-        c = max(c*.992 - .0025, 0.);
-        c += fall*force;
-        gl_FragColor = vec4(min(c,1.),0.,0.,1.);
-      }`, ['prev', 't', 'asp', 'force', 'm', 'mv']);
-    const dsp = prog(`precision highp float; varying vec2 v;
-      uniform sampler2D dye; uniform float t, asp, rev;
-      ${GL_NOISE}${GL_SILK}
-      void main(){
-        float dy = texture2D(dye, v).r;
-        vec3 col = mix(vec3(.025,.01,.014), silk(v, asp, t, dy), rev);
-        col *= mix(.62, 1., smoothstep(.0, .8, v.x*.85 + v.y*.6));
-        col *= 1. - .5*smoothstep(.45, 1.2, length((v - .5)*vec2(asp*.7, 1.)));
-        col += (h(v*vec2(1.31,1.73) + fract(t*.37)) - .5)*.02;
-        gl_FragColor = vec4(col, 1.);
-      }`, ['dye', 't', 'asp', 'rev']);
-    if (!adv || !dsp) return null;
+  const silk = safe(function () {
+    const c = $('#silk');
+    let gl, adv, dsp, lost = false;
+    // (re)built on first run and whenever the browser restores a lost context
+    function build() {
+      const kit = glKit(c, { alpha: false, antialias: false, depth: false, stencil: false }); if (!kit) return false;
+      gl = kit.gl; const prog = kit.prog;
+      adv = prog(`precision highp float; varying vec2 v;
+        uniform sampler2D prev; uniform float t, asp, force; uniform vec2 m, mv;
+        ${GL_NOISE}
+        vec2 curl(vec2 p){ float e=.03; return vec2(fbm(p+vec2(0.,e))-fbm(p-vec2(0.,e)), -(fbm(p+vec2(e,0.))-fbm(p-vec2(e,0.))))/(2.*e); }
+        void main(){
+          vec2 p = v*vec2(asp,1.);
+          vec2 vel = curl(p*1.7 + vec2(t*.04, -t*.03))*.0011;
+          vec2 d = (v-m)*vec2(asp,1.);
+          float fall = exp(-dot(d,d)*55.);
+          vel += mv*fall*.55;
+          float c = texture2D(prev, v - vel/vec2(asp,1.)).r;
+          c = max(c*.992 - .0025, 0.);
+          c += fall*force;
+          gl_FragColor = vec4(min(c,1.),0.,0.,1.);
+        }`, ['prev', 't', 'asp', 'force', 'm', 'mv']);
+      dsp = prog(`precision highp float; varying vec2 v;
+        uniform sampler2D dye; uniform float t, asp, rev;
+        ${GL_NOISE}${GL_SILK}
+        void main(){
+          float dy = texture2D(dye, v).r;
+          vec3 col = mix(vec3(.025,.01,.014), silk(v, asp, t, dy), rev);
+          col *= mix(.62, 1., smoothstep(.0, .8, v.x*.85 + v.y*.6));
+          col *= 1. - .5*smoothstep(.45, 1.2, length((v - .5)*vec2(asp*.7, 1.)));
+          col += (h(v*vec2(1.31,1.73) + fract(t*.37)) - .5)*.02;
+          gl_FragColor = vec4(col, 1.);
+        }`, ['dye', 't', 'asp', 'rev']);
+      if (!adv || !dsp) return false;
+      fbo = []; sw = 0; shh = 0; resize();
+      return true;
+    }
     let fbo = [], sw = 0, shh = 0;
     function target(w, h) {
       const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -543,9 +581,11 @@ section { position: relative; }
       const nw = Math.max(32, Math.round(c.clientWidth * .3)), nh = Math.max(32, Math.round(c.clientHeight * .3));
       if (nw !== sw || nh !== shh) { fbo.forEach(f => { gl.deleteTexture(f.tex); gl.deleteFramebuffer(f.fb); }); sw = nw; shh = nh; fbo = [target(sw, shh), target(sw, shh)]; }
     }
-    resize();
+    if (!build()) return null;
+    onContextLoss(c, () => { lost = true; c.style.visibility = 'hidden'; }, () => { lost = !build(); c.style.visibility = lost ? 'hidden' : ''; });
     let ghostT = 0, last = { x: .5, y: .5 };
     function frame(t, rev) {
+      if (lost) return;
       const asp = c.clientWidth / c.clientHeight;
       const idle = performance.now() - pointer.last > 2500 || !pointer.inHero;
       let mx, my;
@@ -563,68 +603,74 @@ section { position: relative; }
       gl.uniform1f(dsp.u.t, t); gl.uniform1f(dsp.u.asp, asp); gl.uniform1f(dsp.u.rev, rev);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-    return { frame, resize };
-  })();
+    return { frame, resize: () => { if (!lost) resize(); } };
+  });
 
-  const orb = (function () {
-    const c = $('#orb'), kit = glKit(c, { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false }); if (!kit) return null;
-    const { gl, prog } = kit, S = 1.7;
-    const pr = prog(`precision highp float; varying vec2 v;
-      uniform vec2 C; uniform float R, asp, t, hov, rev, S, aa, ang, ft;
-      uniform vec4 B[10];
-      ${GL_NOISE}${GL_SILK}
-      void main(){
-        vec2 p = (v*2. - 1.)*S;
-        float r = length(p);
-        vec3 ic = vec3(0.); float ia = 0.;
-        // watercolor blooms left by the cursor: they widen with age, keep a noisy edge, and pool pigment at the rim
-        float pig = 0., rim = 0.;
-        for (int i = 0; i < 10; i++) {
-          vec4 b = B[i];
-          if (b.w <= 0.) continue;
-          float rad = (.16 + .5*sqrt(b.z))*(.7 + .6*b.w);
-          float dist = length(p - b.xy) + (fbm(p*2.3 + b.xy*7. + b.z*.04) - .5)*.38*rad;
-          float fade = exp(-b.z*.32);
-          pig += smoothstep(rad, rad*.45, dist)*fade*b.w;
-          rim += smoothstep(.09*rad, 0., abs(dist - rad*.9))*fade*b.w;
-        }
-        pig = clamp(pig, 0., 1.); rim = clamp(rim, 0., 1.);
-        vec3 wc = mix(vec3(.62,.12,.26), vec3(.98,.74,.76), smoothstep(.35, .75, fbm(p*3.1 + 5.)));
-        if (r < 1.) {
-          float z = sqrt(1. - r*r);
-          vec3 nn = vec3(p, z);
-          vec3 refr = silk(C - p*.62*R/vec2(asp, 1.), asp, t, 0.)*.85;
-          vec2 q = mat2(cos(ang), -sin(ang), sin(ang), cos(ang))*p*1.45;
-          vec2 wq = vec2(fbm(q*2.1 - ft*.03), fbm(q*2.1 + 4.3 + ft*.025));
-          float s1 = fbm(q*1.6 + vec2(ft*.02, 0.) + 1.7*wq);
-          float smoke = smoothstep(.40, .85, s1);
-          vec3 sc = mix(vec3(.42,.06,.14), vec3(.98,.80,.80), smoothstep(.6, .95, s1));
-          ic = refr*(.6 - .3*smoke) + sc*smoke*(.5 + .5*z)*(.85 + hov*.6);
-          ic += vec3(.75,.22,.32)*exp(-r*r*2.6)*(.22 + hov*.5);
-          ic = mix(ic, ic*.5 + wc*.8, pig*.7);
-          ic = mix(ic, vec3(.42,.05,.14), rim*.35);
-          vec2 sg = q*13.; float sh = h(floor(sg));
-          ic += vec3(1.,.93,.9)*step(.968, sh)*smoothstep(.35, .0, length(fract(sg) - .5))*(.5 + .5*sin(t*1.1 + sh*40.))*z*.9;
-          ic += vec3(.96,.88,.86)*pow(1. - z, 3.)*.6;
-          ic += vec3(.7,.12,.24)*pow(1. - z, 1.5)*smoothstep(-.2, .8, -p.y)*.3;
-          vec3 L1 = normalize(vec3(-.5, .62, .6));
-          ic += vec3(1.)*pow(max(dot(reflect(-L1, nn), vec3(0.,0.,1.)), 0.), 160.)*1.2;
-          ic += vec3(1.,.95,.95)*smoothstep(.24, .1, length((p - vec2(-.36,.44))*vec2(1., 1.5)))*.09;
-          ia = 1. - smoothstep(1. - aa, 1., r);
-        }
-        float halo = exp(-max(r - 1., 0.)*5.5)*.22*(1. + hov*.8)*step(1., r);
-        float caus = exp(-pow(p.x/.8, 2.) - pow((p.y + 1.2)/.09, 2.))*.55;
-        float spill = pig*step(1., r)*.32*smoothstep(S, S - .4, max(abs(p.x), abs(p.y)));
-        float oa = clamp(halo + caus + spill, 0., 1.);
-        vec3 oc = vec3(.8,.25,.38)*halo + vec3(.98,.6,.65)*caus + mix(vec3(.55,.1,.22), vec3(.92,.56,.62), smoothstep(.35, .75, fbm(p*3.1 + 5.)))*spill;
-        gl_FragColor = vec4(ic*ia + oc*(1. - ia), ia + oa*(1. - ia))*rev;
-      }`, ['C', 'R', 'asp', 't', 'hov', 'rev', 'S', 'aa', 'ang', 'ft', 'B[0]']);
-    if (!pr) return null;
+  const orb = safe(function () {
+    const c = $('#orb'), S = 1.7;
+    let gl, pr, lost = false;
+    function build() {
+      const kit = glKit(c, { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false }); if (!kit) return false;
+      gl = kit.gl;
+      pr = kit.prog(`precision highp float; varying vec2 v;
+        uniform vec2 C; uniform float R, asp, t, hov, rev, S, aa, ang, ft;
+        uniform vec4 B[10];
+        ${GL_NOISE}${GL_SILK}
+        void main(){
+          vec2 p = (v*2. - 1.)*S;
+          float r = length(p);
+          vec3 ic = vec3(0.); float ia = 0.;
+          // watercolor blooms left by the cursor: they widen with age, keep a noisy edge, and pool pigment at the rim
+          float pig = 0., rim = 0.;
+          for (int i = 0; i < 10; i++) {
+            vec4 b = B[i];
+            if (b.w <= 0.) continue;
+            float rad = (.16 + .5*sqrt(b.z))*(.7 + .6*b.w);
+            float dist = length(p - b.xy) + (fbm(p*2.3 + b.xy*7. + b.z*.04) - .5)*.38*rad;
+            float fade = exp(-b.z*.32);
+            pig += smoothstep(rad, rad*.45, dist)*fade*b.w;
+            rim += smoothstep(.09*rad, 0., abs(dist - rad*.9))*fade*b.w;
+          }
+          pig = clamp(pig, 0., 1.); rim = clamp(rim, 0., 1.);
+          vec3 wc = mix(vec3(.62,.12,.26), vec3(.98,.74,.76), smoothstep(.35, .75, fbm(p*3.1 + 5.)));
+          if (r < 1.) {
+            float z = sqrt(1. - r*r);
+            vec3 nn = vec3(p, z);
+            vec3 refr = silk(C - p*.62*R/vec2(asp, 1.), asp, t, 0.)*.85;
+            vec2 q = mat2(cos(ang), -sin(ang), sin(ang), cos(ang))*p*1.45;
+            vec2 wq = vec2(fbm(q*2.1 - ft*.03), fbm(q*2.1 + 4.3 + ft*.025));
+            float s1 = fbm(q*1.6 + vec2(ft*.02, 0.) + 1.7*wq);
+            float smoke = smoothstep(.40, .85, s1);
+            vec3 sc = mix(vec3(.42,.06,.14), vec3(.98,.80,.80), smoothstep(.6, .95, s1));
+            ic = refr*(.6 - .3*smoke) + sc*smoke*(.5 + .5*z)*(.85 + hov*.6);
+            ic += vec3(.75,.22,.32)*exp(-r*r*2.6)*(.22 + hov*.5);
+            ic = mix(ic, ic*.5 + wc*.8, pig*.7);
+            ic = mix(ic, vec3(.42,.05,.14), rim*.35);
+            vec2 sg = q*13.; float sh = h(floor(sg));
+            ic += vec3(1.,.93,.9)*step(.968, sh)*smoothstep(.35, .0, length(fract(sg) - .5))*(.5 + .5*sin(t*1.1 + sh*40.))*z*.9;
+            ic += vec3(.96,.88,.86)*pow(1. - z, 3.)*.6;
+            ic += vec3(.7,.12,.24)*pow(1. - z, 1.5)*smoothstep(-.2, .8, -p.y)*.3;
+            vec3 L1 = normalize(vec3(-.5, .62, .6));
+            ic += vec3(1.)*pow(max(dot(reflect(-L1, nn), vec3(0.,0.,1.)), 0.), 160.)*1.2;
+            ic += vec3(1.,.95,.95)*smoothstep(.24, .1, length((p - vec2(-.36,.44))*vec2(1., 1.5)))*.09;
+            ia = 1. - smoothstep(1. - aa, 1., r);
+          }
+          float halo = exp(-max(r - 1., 0.)*5.5)*.22*(1. + hov*.8)*step(1., r);
+          float caus = exp(-pow(p.x/.8, 2.) - pow((p.y + 1.2)/.09, 2.))*.55;
+          float spill = pig*step(1., r)*.32*smoothstep(S, S - .4, max(abs(p.x), abs(p.y)));
+          float oa = clamp(halo + caus + spill, 0., 1.);
+          vec3 oc = vec3(.8,.25,.38)*halo + vec3(.98,.6,.65)*caus + mix(vec3(.55,.1,.22), vec3(.92,.56,.62), smoothstep(.35, .75, fbm(p*3.1 + 5.)))*spill;
+          gl_FragColor = vec4(ic*ia + oc*(1. - ia), ia + oa*(1. - ia))*rev;
+        }`, ['C', 'R', 'asp', 't', 'hov', 'rev', 'S', 'aa', 'ang', 'ft', 'B[0]']);
+      return !!pr;
+    }
+    if (!build()) return null;
+    onContextLoss(c, () => { lost = true; c.style.visibility = 'hidden'; }, () => { lost = !build(); c.style.visibility = lost ? 'hidden' : ''; });
     let side = 0, base = { x: .5, y: .63, r: .24 };
     // hover eases in two slow passes; rotation and smoke flow are accumulated so a speed change never jumps
     const st = { x: .5, y: .63, r: .24, hovT: 0, hov: 0, ang: 0, ft: 0, lastT: 0, str: 0, strT: 0 };
     /* drag the orb to stretch it; moving near it leaves watercolor blooms that spread with the cursor */
-    const hit = $('#orbHit'), geo = { cx: 0, cy: 0, rpx: 0 }, drag = { on: false, sx: 0, sy: 0 };
+    const hit = $('#orbHit'), tip = $('#orbTip'), geo = { cx: 0, cy: 0, rpx: 0 }, drag = { on: false, sx: 0, sy: 0, t0: 0 };
     const blooms = [], BU = new Float32Array(40);
     let lastB = null, lastBT = 0;
     function addBloom(cx, cy, now) {
@@ -640,8 +686,13 @@ section { position: relative; }
       addBloom(e.clientX - r.left, e.clientY - r.top, performance.now());
       if (drag.on) st.strT = clamp(Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) / (geo.rpx * 1.6 || 1), 0, 1);
     });
-    hit.addEventListener('pointerdown', e => { drag.on = true; drag.sx = e.clientX; drag.sy = e.clientY; hit.classList.add('drag'); try { hit.setPointerCapture(e.pointerId); } catch (er) {} });
-    const endDrag = () => { drag.on = false; st.strT = 0; hit.classList.remove('drag'); };
+    hit.addEventListener('pointerdown', e => { drag.on = true; drag.sx = e.clientX; drag.sy = e.clientY; drag.t0 = performance.now(); hit.classList.add('drag'); try { hit.setPointerCapture(e.pointerId); } catch (er) {} });
+    // a press that barely moves is a click: step inside; anything longer is the stretch
+    const endDrag = e => {
+      const tap = drag.on && e.type === 'pointerup' && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 8 && performance.now() - drag.t0 < 450;
+      drag.on = false; st.strT = 0; hit.classList.remove('drag');
+      if (tap && onOrbTap) onOrbTap();
+    };
     hit.addEventListener('pointerup', endDrag); hit.addEventListener('pointercancel', endDrag);
     function resize() {
       const W = hero.clientWidth, Hh = hero.clientHeight, asp = W / Hh;
@@ -658,22 +709,25 @@ section { position: relative; }
       st.x = lerp(st.x, base.x + mx * .025, .05);
       st.y = lerp(st.y, base.y + my * .025 + Math.sin(t * .45) * .01 + scrollP * .3, .08);
       st.str = lerp(st.str, st.strT, drag.on ? .06 : .025);
-      const k = (1 - scrollP * .28) * (.7 + .3 * rev) * (1 + .45 * st.str + .05 * st.hov);
+      const k = (1 - scrollP * .28) * (.7 + .3 * rev) * (1 + .45 * st.str + .05 * st.hov) * (1 + 2.2 * orbFx.suck);
       st.r = base.r * k;
       const cx = st.x * W, cy = (1 - st.y) * Hh;
       geo.cx = cx; geo.cy = cy; geo.rpx = st.r * Hh;
       hit.style.width = hit.style.height = (2 * geo.rpx).toFixed(1) + 'px';
       hit.style.transform = `translate(${(cx - geo.rpx).toFixed(1)}px, ${(cy - geo.rpx).toFixed(1)}px)`;
+      tip.style.transform = `translate(${cx.toFixed(1)}px, ${(cy + geo.rpx + 22).toFixed(1)}px) translateX(-50%)`;
       const now = performance.now();
       while (blooms.length && now - blooms[0].t0 > 7000) blooms.shift();
       for (let i = 0; i < 10; i++) { const b = blooms[i], o = i * 4; if (b) { BU[o] = b.x; BU[o + 1] = b.y; BU[o + 2] = (now - b.t0) / 1000; BU[o + 3] = b.s; } else BU[o + 3] = 0; }
-      const near = drag.on || (pointer.inHero && Math.hypot(pointer.cx - cx, pointer.cy - cy) < st.r * Hh * 1.1);
+      const near = drag.on || orbFx.suck > 0 || (pointer.inHero && Math.hypot(pointer.cx - cx, pointer.cy - cy) < st.r * Hh * 1.1);
+      if (fine) tip.classList.toggle('on', near && !drag.on && !orbFx.suck);
       const dt = clamp(t - st.lastT, 0, .05); st.lastT = t;
       st.hovT = lerp(st.hovT, near ? 1 : 0, .02);
       st.hov = lerp(st.hov, st.hovT * st.hovT * (3 - 2 * st.hovT), .035);
-      st.ang += dt * (.05 + st.hov * .1);
-      st.ft += dt * (1 + st.hov * .5);
+      st.ang += dt * (.05 + st.hov * .1 + orbFx.suck * 2.4);
+      st.ft += dt * (1 + st.hov * .5 + orbFx.suck * 7);
       c.style.transform = `translate(${cx - side / 2}px, ${cy - side / 2}px) scale(${k})`;
+      if (lost) return;
       gl.viewport(0, 0, c.width, c.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(pr.p);
       gl.uniform2f(pr.u.C, st.x, st.y); gl.uniform1f(pr.u.R, st.r); gl.uniform1f(pr.u.asp, asp);
@@ -682,19 +736,19 @@ section { position: relative; }
       gl.uniform1f(pr.u.ang, st.ang); gl.uniform1f(pr.u.ft, st.ft); gl.uniform4fv(pr.u['B[0]'], BU);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-    return { frame, resize };
-  })();
+    return { frame, resize, geo };
+  });
 
-  const heroState = { rev: motion ? 0 : 1 };
+  const heroState = { rev: motion ? 0 : 1, covered: false };
   addEventListener('resize', () => { if (silk) silk.resize(); if (orb) orb.resize(); });
   if (silk || orb) {
     if (reduce) { for (let i = 0; i < 30; i++) { if (silk) silk.frame(4 + i * .016, 1); } if (orb) orb.frame(4, 1, 0); }
     else {
-      let vis = true; new IntersectionObserver(([en]) => vis = en.isIntersecting).observe(hero);
+      let vis = true; if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => vis = en.isIntersecting).observe(hero);
       const t0 = performance.now();
       (function loop(now) {
         requestAnimationFrame(loop);
-        if (!vis || document.hidden) return;
+        if (!vis || document.hidden || heroState.covered) return;
         const t = (now - t0) / 1000, sp = clamp(scrollY / innerHeight, 0, 1);
         if (silk) silk.frame(t, heroState.rev);
         if (orb) orb.frame(t, heroState.rev, sp);
@@ -708,7 +762,7 @@ section { position: relative; }
   let ownerView = false, openEditorFor = null;
   const catOf = k => CATS.find(c => c.k === k) || CATS[0];
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  function artCanvas(cat, cls) { const cv = el('canvas', cls); requestAnimationFrame(() => paint(cv, tex(catOf(cat).art, 4 + CATS.indexOf(catOf(cat)) * 3))); return cv; }
+  function artCanvas(cat, cls) { const cv = el('canvas', cls); requestAnimationFrame(() => paint(cv, tex(catOf(cat).art, catOf(cat).seed))); return cv; }
   function thumbFor(item) {
     if (!item.image) return artCanvas(item.cat, 'thumb');
     const img = el('img', 'thumb'); img.loading = 'lazy'; img.alt = item.title; img.src = item.image;
@@ -771,7 +825,7 @@ section { position: relative; }
     row.addEventListener('pointerenter', () => {
       preview.classList.add('on');
       if (it.image) { pvImg.hidden = false; pvImg.src = it.image; pvImg.onerror = () => { pvImg.hidden = true; }; } else pvImg.hidden = true;
-      paint(pvArt, tex(catOf(it.cat).art, 4 + CATS.indexOf(catOf(it.cat)) * 3));
+      paint(pvArt, tex(catOf(it.cat).art, catOf(it.cat).seed));
     });
     row.addEventListener('pointerleave', () => { preview.classList.remove('on'); });
   }
@@ -785,6 +839,182 @@ section { position: relative; }
     })();
   }
   renderWorks(false);
+
+  /* ── the orb's inner world: click the crystal ball and fall into How I think ── */
+  safe(function () {
+    const wEl = $('#world'), stage = $('#wStage'), cards = $$('.w-card', stage), dotsEl = $('#wDots'), hint = $('#wHint'), closeBtn = $('#wClose');
+    const hit = $('#orbHit'), tip = $('#orbTip'), page = $$('main, .nav'), N = cards.length, NUM = ['◇', 'I', 'II', 'III', 'IV', 'V', 'VI'];
+    const st = { open: false, busy: false, closing: false, byKey: false, last: 0, p: 0, target: 0, mx: 0, my: 0, tmx: 0, tmy: 0, moved: false, raf: 0, snap: 0, tl: null };
+    const go = i => { st.target = clamp(i, 0, N - 1); if (!st.moved && st.target > .2) { st.moved = true; hint.classList.add('off'); } };
+    const dots = cards.map((c, i) => {
+      const li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.textContent = NUM[i] || String(i); b.setAttribute('aria-label', i ? 'Rule ' + NUM[i] : 'How I think');
+      b.addEventListener('click', () => go(i)); li.append(b); dotsEl.append(li); return b;
+    });
+    hint.textContent = fine ? 'Scroll to drift deeper' : 'Swipe to drift deeper';
+
+    // inside the glass: smoke folding past, motes drifting toward you, the sphere's curve at the edges
+    const gfx = safe(function () {
+      const c = $('#worldGL'); let kit = null, pr = null, lost = false;
+      function build() {
+        kit = glKit(c, { alpha: false, antialias: false, depth: false, stencil: false }); if (!kit) return false;
+        pr = kit.prog(`precision highp float; varying vec2 v;
+          uniform vec2 res, m; uniform float t, depth;
+          ${GL_NOISE}
+          void main(){
+            vec2 uv = gl_FragCoord.xy/res; float asp = res.x/res.y;
+            vec2 p = (uv - .5)*vec2(asp, 1.);
+            float r = length(p/vec2(max(asp, 1.)*.62, .62));
+            vec2 q = p*(1. + .28*dot(p, p)) + m*.06;
+            float z = t*.03 + depth*.42;
+            vec2 w = vec2(fbm(q*1.5 + vec2(z, -z*.6)), fbm(q*1.5 + 4.3 - vec2(z*.7, z)));
+            float s = fbm(q*1.15 + 1.9*w + vec2(0., z*.8));
+            float smoke = smoothstep(.38, .88, s);
+            vec3 col = mix(vec3(.03,.008,.015), vec3(.19,.03,.065), smoothstep(.2, .85, s));
+            col += mix(vec3(.42,.06,.14), vec3(.96,.74,.76), smoothstep(.62, .95, s))*smoke*.5;
+            for (int l = 0; l < 2; l++) {
+              float fl = float(l);
+              vec2 sg = q*(10. + fl*9.) + vec2(fl*3.1, depth*(1.4 + fl) + t*.02);
+              float hh = h(floor(sg));
+              col += vec3(1.,.92,.9)*step(.972, hh)*smoothstep(.32, 0., length(fract(sg) - .5))*(.45 + .55*sin(t*1.2 + hh*40.))*(.6 - fl*.25);
+            }
+            col *= 1. - .55*smoothstep(.55, 1.25, r);
+            col += vec3(.85,.42,.52)*exp(-pow((r - 1.02)*6., 2.))*.08;
+            col += vec3(1.,.95,.95)*smoothstep(.3, 0., length((p - vec2(-.38*asp, .3))*vec2(.9, 2.4)))*.045;
+            col += (h(uv*vec2(1.31,1.73) + fract(t*.37)) - .5)*.018;
+            gl_FragColor = vec4(col, 1.);
+          }`, ['res', 'm', 't', 'depth']);
+        return !!pr;
+      }
+      if (!build()) return null;
+      onContextLoss(c, () => { lost = true; }, () => { lost = !build(); });
+      function size() { const d = Math.min(devicePixelRatio || 1, 1.5) * .7; c.width = Math.max(2, Math.round(innerWidth * d)); c.height = Math.max(2, Math.round(innerHeight * d)); }
+      function draw(t, depth, mx, my) {
+        if (lost) return;
+        const gl = kit.gl; gl.viewport(0, 0, c.width, c.height); gl.useProgram(pr.p);
+        gl.uniform2f(pr.u.res, c.width, c.height); gl.uniform2f(pr.u.m, mx, my); gl.uniform1f(pr.u.t, t); gl.uniform1f(pr.u.depth, depth);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
+      return { size, draw };
+    });
+    if (gfx) wEl.style.background = 'none';
+
+    // the rules hang at different depths; travelling forward brings each one out of the haze and past you
+    function layout() {
+      const vw = innerWidth, vh = innerHeight;
+      cards.forEach((c, i) => {
+        const d = i - st.p;
+        if (d < -.6 || d > 1.2) { c.style.visibility = 'hidden'; c.setAttribute('aria-hidden', 'true'); return; }
+        let sc, o, bl;
+        if (d >= 0) { sc = 1 / (1 + d * 1.1); o = Math.pow(clamp(1 - d * .95, 0, 1), 2); bl = d * 7; }
+        else { sc = 1 - d * 1.6; o = clamp(1 + d * 2.2, 0, 1); bl = -d * 12; }
+        const x = Math.sin(i * 2.4 + 1) * vw * .1 * d + st.mx * 22 * (1 + d);
+        const y = Math.cos(i * 1.9) * vh * .06 * d + st.my * 14 * (1 + d);
+        c.style.visibility = 'visible';
+        c.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${sc.toFixed(4)})`;
+        c.style.opacity = o.toFixed(3);
+        c.style.filter = reduce || bl < .15 ? 'none' : `blur(${bl.toFixed(2)}px)`;
+        c.style.zIndex = String(100 - Math.round(d * 10));
+        c.setAttribute('aria-hidden', String(Math.abs(d) >= .5));
+      });
+      const at = Math.round(st.p);
+      dots.forEach((b, i) => b.setAttribute('aria-current', String(i === at)));
+    }
+    function frame(now) {
+      if (!st.open) return;
+      st.raf = requestAnimationFrame(frame);
+      const dt = Math.min(.1, (now - (st.last || now)) / 1000) * 60; st.last = now;
+      st.p += (st.target - st.p) * (reduce ? 1 : 1 - Math.pow(.925, dt)); if (Math.abs(st.target - st.p) < .0005) st.p = st.target;
+      const km = 1 - Math.pow(.95, dt); st.mx += (st.tmx - st.mx) * km; st.my += (st.tmy - st.my) * km;
+      layout();
+      if (gfx) gfx.draw(now / 1000, st.p, st.mx, st.my);
+    }
+    function center() {
+      const g = orb && orb.geo;
+      if (g && g.rpx) { const r = hero.getBoundingClientRect(); return { x: r.left + g.cx, y: r.top + g.cy, r: g.rpx }; }
+      const b = hit.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2, r: b.width / 2 || 80 };
+    }
+    const reach = c => Math.hypot(Math.max(c.x, innerWidth - c.x), Math.max(c.y, innerHeight - c.y)) + 60;
+    const originOf = c => (i, n) => `${c.x}px ${c.y + (n.tagName === 'MAIN' ? scrollY : 0)}px`;
+
+    function open(byKey) {
+      if (st.open || st.busy) return;
+      const c = center();
+      st.byKey = !!byKey; st.last = 0;
+      st.open = st.busy = true; st.p = st.target = 0; st.moved = false; hint.classList.remove('off');
+      wEl.hidden = false; document.documentElement.classList.add('world-on');
+      if (lenis) lenis.stop();
+      page.forEach(n => { n.inert = true; });
+      if (gfx) gfx.size();
+      layout(); cancelAnimationFrame(st.raf); st.raf = requestAnimationFrame(frame);
+      if (Sound.on) Sound.whoosh(false);
+      const done = () => { st.busy = false; heroState.covered = true; (st.byKey ? closeBtn : wEl).focus({ preventScroll: true }); };
+      if (!motion) { done(); return; }
+      if (st.tl) st.tl.kill();
+      gsap.set(page, { transformOrigin: originOf(c) });
+      st.tl = gsap.timeline({ onComplete: () => { gsap.set(wEl, { clipPath: 'none' }); gsap.set(page, { visibility: 'hidden' }); done(); } })
+        .set(wEl, { clipPath: `circle(${(c.r * .92).toFixed(1)}px at ${c.x.toFixed(1)}px ${c.y.toFixed(1)}px)`, opacity: 0 })
+        .to(orbFx, { suck: 1, duration: 1.1, ease: 'power2.in' }, 0)
+        .to(page, { scale: 1.16, opacity: .12, duration: 1.5, ease: 'expo.in' }, 0)
+        .to(wEl, { opacity: 1, duration: .45, ease: 'sine.out' }, .55)
+        .to(wEl, { clipPath: `circle(${reach(c).toFixed(1)}px at ${c.x.toFixed(1)}px ${c.y.toFixed(1)}px)`, duration: 1.3, ease: 'expo.inOut' }, .55)
+        .fromTo(stage, { scale: .45 }, { scale: 1, duration: 1.8, ease: 'expo.out' }, .75);
+    }
+    function finish() {
+      st.open = st.busy = st.closing = false; cancelAnimationFrame(st.raf);
+      wEl.hidden = true; orbFx.suck = 0;
+      if (window.gsap) { gsap.set(page, { clearProps: 'transform,transformOrigin,opacity,visibility' }); gsap.set([wEl, stage], { clearProps: 'clipPath,opacity,transform' }); }
+      document.documentElement.classList.remove('world-on');
+      if (lenis) lenis.start();
+      if (st.byKey) hit.focus({ preventScroll: true }); else if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    function close() {
+      if (!st.open || st.closing) return;
+      st.closing = st.busy = true; heroState.covered = false;
+      page.forEach(n => { n.inert = false; });
+      if (Sound.on) Sound.whoosh(true);
+      if (!motion) { finish(); return; }
+      const c = center();
+      if (st.tl) st.tl.kill();
+      gsap.set(page, { visibility: 'visible', transformOrigin: originOf(c) });
+      st.tl = gsap.timeline({ onComplete: finish })
+        .to(stage, { scale: .42, duration: 1.15, ease: 'expo.in' }, 0)
+        .fromTo(wEl, { clipPath: `circle(${reach(c).toFixed(1)}px at ${c.x.toFixed(1)}px ${c.y.toFixed(1)}px)` },
+          { clipPath: `circle(${(c.r * .92).toFixed(1)}px at ${c.x.toFixed(1)}px ${c.y.toFixed(1)}px)`, duration: 1.25, ease: 'expo.inOut' }, .1)
+        .to(wEl, { opacity: 0, duration: .4, ease: 'sine.in' }, 1)
+        .to(page, { scale: 1, opacity: 1, duration: 1.4, ease: 'expo.out' }, .6)
+        .to(orbFx, { suck: 0, duration: 1.8, ease: 'expo.out' }, .6);
+    }
+
+    wEl.addEventListener('wheel', e => {
+      e.preventDefault();
+      go(st.target + (e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY) * .0026);
+      clearTimeout(st.snap); st.snap = setTimeout(() => go(Math.round(st.target)), 260);
+    }, { passive: false });
+    let ty = null;
+    wEl.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+    wEl.addEventListener('touchmove', e => { if (ty == null) return; const y = e.touches[0].clientY; go(st.target + (ty - y) * .007); ty = y; e.preventDefault(); }, { passive: false });
+    wEl.addEventListener('touchend', () => { ty = null; go(Math.round(st.target)); });
+    wEl.addEventListener('pointermove', e => { st.tmx = e.clientX / innerWidth - .5; st.tmy = e.clientY / innerHeight - .5; });
+    closeBtn.addEventListener('click', close);
+    document.addEventListener('keydown', e => {
+      if (!st.open) return;
+      const k = e.key;
+      if (k === 'Escape') { e.preventDefault(); close(); }
+      else if (k === 'ArrowDown' || k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); go(Math.round(st.target) + 1); }
+      else if (k === 'ArrowUp' || k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); go(Math.round(st.target) - 1); }
+      else if (k === 'Home') { e.preventDefault(); go(0); }
+      else if (k === 'End') { e.preventDefault(); go(N - 1); }
+      else if (k === 'Tab') { const f = [closeBtn, ...dots], i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus(); }
+    });
+    addEventListener('resize', () => { if (st.open && gfx) gfx.size(); });
+    hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(true); } });
+    onOrbTap = () => open(false);
+    wEl.tabIndex = -1;
+    // without WebGL there is no drawn orb: keep a doorway where it would be
+    if (!orb) { hit.classList.add('static'); tip.classList.add('static', 'on'); hit.addEventListener('click', () => open(false)); }
+    else if (!fine) setTimeout(() => { tip.classList.add('on'); setTimeout(() => tip.classList.remove('on'), 4200); }, 7600);
+  });
 
   /* ── lacquered email button ── */
   const copyBtn = $('#copyBtn'), mail = $('#mail'), copied = $('#copied');
@@ -853,6 +1083,15 @@ section { position: relative; }
       n.connect(bp); bp.connect(g); g.connect(sfx); n.start(t); n.stop(t + 3);
       bell(mtof(86), t + 1.6, .03, 4.5, sfx, true);
     }
+    // the orb: a breath drawn inward with a low bell; reversed on the way back out
+    function whoosh(out) {
+      if (!on || !ctx) return;
+      const t = ctx.currentTime + .02, n = noise(2.6), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+      bp.type = 'bandpass'; bp.Q.value = 1.3; bp.frequency.setValueAtTime(out ? 280 : 2400, t); bp.frequency.exponentialRampToValueAtTime(out ? 2200 : 230, t + 1.7);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.13, t + .9); g.gain.exponentialRampToValueAtTime(.0001, t + 2.4);
+      n.connect(bp); bp.connect(g); g.connect(sfx); n.start(t); n.stop(t + 2.6);
+      bell(mtof(out ? 81 : 74), t + (out ? .25 : 1.15), .03, 4.2, sfx, true);
+    }
     // score: major-ninth pads breathing through a slowly moving filter, a low drone, sparse music-box notes
     const CHORDS = [[50, 57, 61, 64, 66], [47, 54, 57, 62, 64], [43, 50, 54, 57, 59], [45, 52, 54, 59, 62]];
     function pad() {
@@ -897,7 +1136,7 @@ section { position: relative; }
     }
     document.addEventListener('visibilitychange', () => { if (!ctx || !on) return; if (document.hidden) ctx.suspend(); else ctx.resume(); });
     function tryAuto(withIntro) { if (!init()) return false; if (ctx.state !== 'running') return false; start(withIntro); return true; }
-    return { start, stop, tryAuto, get on() { return on; } };
+    return { start, stop, tryAuto, whoosh, get on() { return on; } };
   })();
   const soundBtn = $('#soundBtn');
   const syncSoundBtn = () => { soundBtn.classList.toggle('on', Sound.on); soundBtn.setAttribute('aria-pressed', String(Sound.on)); soundBtn.querySelector('.lbl').textContent = Sound.on ? 'Sound on' : 'Sound off'; };
@@ -935,7 +1174,7 @@ section { position: relative; }
     const nameEl = $('#preName');
     const pw = { wash: 0, reveal: 0, sheen: 0, out: 0 };
     /* watercolor opening drawn in WebGL: washes, the name bleeding in, and the closing dissolve */
-    const preGL = (function () {
+    const preGL = safe(function () {
       const c = $('#preGL'), kit = glKit(c, { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false }); if (!kit) return null;
       const { gl, prog } = kit;
       const pp = prog(`precision highp float; varying vec2 v;
@@ -1013,7 +1252,7 @@ section { position: relative; }
       }
       draw(performance.now());
       return { draw };
-    })();
+    });
     if (preGL) pre.style.background = 'transparent'; else pre.classList.add('no-gl');
     /* motes of light drifting up behind the name */
     const dust = $('#preDust'), dg = dust.getContext('2d'), dd = Math.min(devicePixelRatio || 1, 2);
@@ -1074,15 +1313,6 @@ section { position: relative; }
     const to = +b.dataset.to, pad = +(b.dataset.pad || 0), suf = b.dataset.suffix || '', comma = !!b.dataset.comma, o = { v: 0 };
     const show = () => { const n = Math.round(o.v); let s = comma ? n.toLocaleString('en-US') : String(n); if (pad) s = s.padStart(pad, '0'); b.textContent = s + (n === to ? suf : ''); };
     gsap.to(o, { v: to, duration: 2.2, ease: 'power3.out', onUpdate: show, scrollTrigger: { trigger: b, start: 'top 92%' } });
-  });
-
-  const mm = gsap.matchMedia();
-  mm.add('(min-width: 761px)', () => {
-    const track = $('#prTrack'), dist = () => Math.max(0, track.scrollWidth - innerWidth);
-    gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '#prPin', start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 1.4, invalidateOnRefresh: true } });
-  });
-  mm.add('(max-width: 760px)', () => {
-    gsap.utils.toArray('.pr').forEach(p => gsap.from(p, { y: 36, opacity: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: p, start: 'top 90%' } }));
   });
 
   addEventListener('load', () => ScrollTrigger.refresh());
